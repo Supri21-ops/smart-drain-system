@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🚰 SmartDrain — Predictive Drainage Monitoring Platform
 
 **BMSIT Hackathon Prototype** | Command-Center Dashboard | ESP8266 + Node.js + React
@@ -370,3 +371,6 @@ React Frontend  (Vite + Chart.js + Leaflet)
 ---
 
 *SmartDrain — BMSIT Hackathon 2026 · Prototype — not a production system*
+=======
+# smart-drain-system
+>>>>>>> 343a3a0ee16c7770fea9de882b6b74ffd98081c3
