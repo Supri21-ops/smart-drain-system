@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useSocket } from './hooks/useSocket'
 
 import Sidebar        from './components/Sidebar'
+import ThemeSwitcher  from './components/ThemeSwitcher'
 import DashboardPage  from './pages/DashboardPage'
 import DrainDetailPage from './pages/DrainDetailPage'
 import MapPage        from './pages/MapPage'
@@ -12,6 +13,21 @@ import DemoControlPage from './pages/DemoControlPage'
 
 export default function App() {
   const [page, setPage] = useState('dashboard')
+  const [theme, setTheme] = useState(() => {
+    try {
+      return localStorage.getItem('smartdrain_theme') || 'navy'
+    } catch {
+      return 'navy'
+    }
+  })
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme)
+    try {
+      localStorage.setItem('smartdrain_theme', theme)
+    } catch {}
+  }, [theme])
+
   const {
     connected,
     lastTelemetry,
@@ -51,6 +67,7 @@ export default function App() {
         </div>
 
         <div className="topbar-status">
+          <ThemeSwitcher currentTheme={theme} onThemeChange={setTheme} />
           <span className="live-badge">LIVE</span>
           <div className={`status-pill ${connected ? 'online' : 'offline'}`}>
             <span className="pulse-dot" />
@@ -114,25 +131,25 @@ export default function App() {
 
           {/* Pages */}
           {page === 'dashboard' && (
-            <DashboardPage dashboardData={dashboardUpdate} onNavigate={setPage} />
+            <DashboardPage dashboardData={dashboardUpdate} onNavigate={setPage} theme={theme} />
           )}
           {page === 'drains' && (
-            <DrainDetailPage lastTelemetry={lastTelemetry} />
+            <DrainDetailPage lastTelemetry={lastTelemetry} theme={theme} />
           )}
           {page === 'map' && (
-            <MapPage dashboardData={dashboardUpdate} />
+            <MapPage dashboardData={dashboardUpdate} theme={theme} />
           )}
           {page === 'priority' && (
-            <PriorityQueuePage dashboardData={dashboardUpdate} />
+            <PriorityQueuePage dashboardData={dashboardUpdate} theme={theme} />
           )}
           {page === 'incidents' && (
-            <IncidentsPage incidentUpdate={incidentUpdate} />
+            <IncidentsPage incidentUpdate={incidentUpdate} theme={theme} />
           )}
           {page === 'sensors' && (
-            <SensorHealthPage lastTelemetry={lastTelemetry} />
+            <SensorHealthPage lastTelemetry={lastTelemetry} theme={theme} />
           )}
           {page === 'demo' && (
-            <DemoControlPage />
+            <DemoControlPage theme={theme} />
           )}
         </main>
       </div>

@@ -34,33 +34,41 @@ function buildDataset(history, key, color, label) {
   }
 }
 
-const baseOptions = {
-  responsive: true,
-  maintainAspectRatio: false,
-  animation: { duration: 300 },
-  plugins: {
-    legend: {
-      display: true,
-      labels: { color: '#8ba3c7', boxWidth: 12, font: { size: 11 } },
+function getBaseOptions() {
+  const isLight = typeof document !== 'undefined' && document.documentElement.getAttribute('data-theme') === 'light'
+
+  return {
+    responsive: true,
+    maintainAspectRatio: false,
+    animation: { duration: 300 },
+    plugins: {
+      legend: {
+        display: true,
+        labels: {
+          color: isLight ? '#475569' : '#8ba3c7',
+          boxWidth: 12,
+          font: { size: 11 },
+        },
+      },
+      tooltip: {
+        backgroundColor: isLight ? '#ffffff' : '#111927',
+        borderColor: isLight ? '#cbd5e1' : '#1e2d40',
+        borderWidth: 1,
+        titleColor: isLight ? '#0f172a' : '#e8f0fe',
+        bodyColor: isLight ? '#334155' : '#8ba3c7',
+      },
     },
-    tooltip: {
-      backgroundColor: '#111927',
-      borderColor: '#1e2d40',
-      borderWidth: 1,
-      titleColor: '#e8f0fe',
-      bodyColor: '#8ba3c7',
+    scales: {
+      x: {
+        ticks: { color: isLight ? '#64748b' : '#4a6080', maxTicksLimit: 8, font: { size: 10 } },
+        grid:  { color: isLight ? 'rgba(203,213,225,0.4)' : 'rgba(30,45,64,0.5)' },
+      },
+      y: {
+        ticks: { color: isLight ? '#64748b' : '#4a6080', font: { size: 10 } },
+        grid:  { color: isLight ? 'rgba(203,213,225,0.4)' : 'rgba(30,45,64,0.5)' },
+      },
     },
-  },
-  scales: {
-    x: {
-      ticks: { color: '#4a6080', maxTicksLimit: 8, font: { size: 10 } },
-      grid:  { color: 'rgba(30,45,64,0.5)' },
-    },
-    y: {
-      ticks: { color: '#4a6080', font: { size: 10 } },
-      grid:  { color: 'rgba(30,45,64,0.5)' },
-    },
-  },
+  }
 }
 
 function formatTime(ts) {
@@ -76,12 +84,13 @@ export function WaterLevelChart({ history }) {
       buildDataset(history, 'water_level_percent', COLORS.water, 'Water Level (%)'),
     ],
   }
+  const base = getBaseOptions()
   const opts = {
-    ...baseOptions,
+    ...base,
     scales: {
-      ...baseOptions.scales,
-      y: { ...baseOptions.scales.y, min: 0, max: 100,
-           ticks: { ...baseOptions.scales.y.ticks, callback: v => v + '%' } },
+      ...base.scales,
+      y: { ...base.scales.y, min: 0, max: 100,
+           ticks: { ...base.scales.y.ticks, callback: v => v + '%' } },
     },
   }
   return (
@@ -99,12 +108,13 @@ export function FlowChart({ history }) {
       buildDataset(history, 'flow_rate_lpm', COLORS.flow, 'Flow Rate (L/min)'),
     ],
   }
+  const base = getBaseOptions()
   const opts = {
-    ...baseOptions,
+    ...base,
     scales: {
-      ...baseOptions.scales,
-      y: { ...baseOptions.scales.y, min: 0,
-           ticks: { ...baseOptions.scales.y.ticks, callback: v => v + ' L/m' } },
+      ...base.scales,
+      y: { ...base.scales.y, min: 0,
+           ticks: { ...base.scales.y.ticks, callback: v => v + ' L/m' } },
     },
   }
   return (
@@ -123,11 +133,12 @@ export function MultiChart({ history }) {
       buildDataset(history, 'risk_score',          COLORS.risk,  'Risk Score'),
     ],
   }
+  const base = getBaseOptions()
   const opts = {
-    ...baseOptions,
+    ...base,
     scales: {
-      ...baseOptions.scales,
-      y: { ...baseOptions.scales.y, min: 0, max: 100 },
+      ...base.scales,
+      y: { ...base.scales.y, min: 0, max: 100 },
     },
   }
   return (
@@ -145,9 +156,10 @@ export function RiseRateChart({ history }) {
       buildDataset(history, 'water_rise_rate_cm_min', COLORS.rise, 'Rise Rate (cm/min)'),
     ],
   }
+  const base = getBaseOptions()
   return (
     <div className="chart-container">
-      <Line data={data} options={baseOptions} />
+      <Line data={data} options={base} />
     </div>
   )
 }
